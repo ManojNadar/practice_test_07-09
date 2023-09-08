@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MyUserContext } from "../AuthContext";
 import { NavLink, useNavigate } from "react-router-dom";
+import api from "../ApiConfig";
+import { toast } from "react-hot-toast";
 
 const AddPost = () => {
   const [regData, setRegData] = useState({
@@ -24,8 +26,11 @@ const AddPost = () => {
     const { image, caption } = regData;
 
     if (image && caption) {
+      const token = JSON.parse(localStorage.getItem("userToken"));
+
       const response = await api.post("/addpost", {
         regData,
+        token,
       });
 
       if (response.data.success) {
@@ -56,7 +61,7 @@ const AddPost = () => {
 
       <form className="formContainer" onSubmit={handleSubmit}>
         <div className="allInputDivs">
-          <label>Name</label> <br />
+          <label>Image</label> <br />
           <input
             type="text"
             onChange={handleChange}
@@ -65,7 +70,7 @@ const AddPost = () => {
           />
         </div>
         <div className="allInputDivs">
-          <label>Name</label> <br />
+          <label>Caption</label> <br />
           <input
             type="text"
             onChange={handleChange}

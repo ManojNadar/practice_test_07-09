@@ -17,7 +17,7 @@ const postSchema = new Schema({
     type: [String],
   },
   comments: {
-    type: [String],
+    type: [Object],
   },
 });
 

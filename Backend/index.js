@@ -47,6 +47,8 @@ import {
   OwnPosts,
   addPost,
   allpost,
+  deleteComments,
+  postComments,
 } from "./Controllers/Post/PostController.js";
 // import { CheckToken } from "./Middleware/CheckToken.js";
 
@@ -113,6 +115,8 @@ app.post("/addpost", isvalidUser, addPost);
 app.post("/ownposts", isvalidUser, OwnPosts);
 app.get("/allpost", allpost);
 app.post("/likepost", LikePost);
+app.post("/post-comment", isvalidUser, postComments);
+app.post("/delete-comment", isvalidUser, deleteComments);
 
 mongoose
   .connect(process.env.MONGO_URL)
