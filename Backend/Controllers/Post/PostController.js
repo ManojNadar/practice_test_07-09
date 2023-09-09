@@ -287,18 +287,34 @@ export const deleteComments = async (req, res) => {
 
     const user = await UserModel.findById(userId);
 
-    console.log(user);
+    // console.log(user);
 
     if (user) {
       const post = await PostModel.findById(postId);
       if (post) {
-        const filterComment = post?.comments?.filter((e) => e.commentId != id);
+        let flag = false;
+        for (let i = 0; i < post.comments.length; i++) {
+          if (post.comments[i].userId == JSON.stringify(user._id)) {
+            flag = true;
+          }
+        }
 
-        post.comments = filterComment;
-        await post.save();
-        return res.status(200).json({
-          success: true,
-          message: "comment deleted",
+        if (flag) {
+          const filterComment = post?.comments?.filter(
+            (e) => e.commentId != id
+          );
+
+          post.comments = filterComment;
+          await post.save();
+          return res.status(200).json({
+            success: true,
+            message: "comment deleted",
+          });
+        }
+
+        return res.status(404).json({
+          success: false,
+          message: "you are not a valid user to delete a comment",
         });
       }
 
