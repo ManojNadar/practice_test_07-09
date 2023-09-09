@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendTwilioMessage } from "../helpers/Sms.js";
 import { v4 as uuidv4 } from "uuid";
+import UserModel from "../Model/UserModel.js";
 
 export const Register = async (req, res) => {
   try {
@@ -259,3 +260,4 @@ export const verifyOtp = async (req, res) => {
       .json({ success: false, error: "error from catch block" });
   }
 };
+

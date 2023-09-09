@@ -39,6 +39,12 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  friendRequests: {
+    type: [String],
+  },
+  myFriendsList: {
+    type: [String],
+  },
 });
 
 export default mongoose.model("user", userSchema);

@@ -50,6 +50,10 @@ import {
   deleteComments,
   postComments,
 } from "./Controllers/Post/PostController.js";
+import {
+  allUsers,
+  friendRequest,
+} from "./Controllers/FriendsController/friends.js";
 // import { CheckToken } from "./Middleware/CheckToken.js";
 
 const app = express();
@@ -117,6 +121,11 @@ app.get("/allpost", allpost);
 app.post("/likepost", LikePost);
 app.post("/post-comment", isvalidUser, postComments);
 app.post("/delete-comment", isvalidUser, deleteComments);
+
+// social users
+
+app.get("/allusers", allUsers);
+app.post("/friendrequest", isvalidUser, friendRequest);
 
 mongoose
   .connect(process.env.MONGO_URL)
