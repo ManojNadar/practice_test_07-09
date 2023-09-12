@@ -5,10 +5,13 @@ import { v4 as uuid } from "uuid";
 
 export const addPost = async (req, res) => {
   try {
-    const { image, caption } = req.body.regData;
+    const { caption } = req.body.regData;
+    const { file } = req.body;
     const { token } = req.body;
 
-    if (image && caption) {
+    console.log(caption, file, token);
+
+    if (caption && file) {
       const decodeToken = jwt.verify(token, process.env.SECRET_KEY);
 
       if (!decodeToken) {
@@ -21,7 +24,7 @@ export const addPost = async (req, res) => {
       const userId = decodeToken?.userId;
 
       const post = new PostModel({
-        image,
+        image: file,
         caption,
         userId: userId,
       });

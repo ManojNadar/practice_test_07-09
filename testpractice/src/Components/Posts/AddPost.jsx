@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MyUserContext } from "../AuthContext";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../ApiConfig";
 import { toast } from "react-hot-toast";
 
 const AddPost = () => {
   const [regData, setRegData] = useState({
-    image: "",
+    // image: "",
     caption: "",
   });
+  const [file, setFile] = useState();
 
   const route = useNavigate();
   const { state } = useContext(MyUserContext);
@@ -23,20 +24,19 @@ const AddPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { image, caption } = regData;
-
-    if (image && caption) {
+    const { caption } = regData;
+    if (file && caption) {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
       const response = await api.post("/addpost", {
         regData,
         token,
+        file,
       });
 
       if (response.data.success) {
         toast.success(response.data.message);
         setRegData({
-          image: "",
           caption: "",
         });
 
@@ -55,19 +55,31 @@ const AddPost = () => {
     }
   }, [state, route]);
 
+  // console.log(file);
+
+  const handleChangeValue = async (e) => {
+    const reader = new FileReader();
+
+    const fileData = e.target.files[0];
+
+    if (fileData) {
+      // console.log(fileData);
+      reader.readAsDataURL(fileData);
+    }
+    // console.log(reader);
+
+    reader.onload = () => {
+      setFile(reader.result);
+    };
+  };
+
   return (
     <>
       <h2>Add post</h2>
 
       <form className="formContainer" onSubmit={handleSubmit}>
-        <div className="allInputDivs">
-          <label>Image</label> <br />
-          <input
-            type="text"
-            onChange={handleChange}
-            name="image"
-            value={regData.image}
-          />
+        <div>
+          <input type="file" onChange={handleChangeValue} />
         </div>
         <div className="allInputDivs">
           <label>Caption</label> <br />
@@ -83,6 +95,14 @@ const AddPost = () => {
           <input type="submit" value="POST" />
         </div>
       </form>
+
+      <div>
+        <img
+          style={{ height: "500px", width: "500px", objectFit: "contain" }}
+          src={file}
+          alt="uploaded"
+        />
+      </div>
     </>
   );
 };
