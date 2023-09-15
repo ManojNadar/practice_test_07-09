@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import api from "../ApiConfig";
-import { toast } from "react-hot-toast";
+import Like from "../Like";
+import { MyUserContext } from "../AuthContext";
 
 const NewsFeed = () => {
   const [allPost, setAllPost] = useState([]);
-  const [like, setLike] = useState(false);
+  const { posts, state } = useContext(MyUserContext);
+  // console.log(like);
 
-  console.log(like);
+  // console.log(allPost);
+  // console.log(state?.multiplePosts);
+
+  // useEffect(() => {
+  //   if (state?.multiplePosts?.length) {
+  //     setAllPost(state?.multiplePosts);
+  //   } else {
+  //     setAllPost([]);
+  //   }
+  // }, [state?.multiplePosts]);
 
   useEffect(() => {
     async function getAllPost() {
@@ -14,6 +25,7 @@ const NewsFeed = () => {
         const response = await api.get("/allpost");
 
         if (response.data.success) {
+          posts(response.data.allposts);
           setAllPost(response.data.allposts);
         }
       } catch (error) {
@@ -23,21 +35,15 @@ const NewsFeed = () => {
     getAllPost();
   }, []);
 
-  const likeSection = async (postId) => {
-    // console.log(postId);
-    try {
-      const token = JSON.parse(localStorage.getItem("userToken"));
-
-      const response = await api.post("/likepost", { token, postId });
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-        setLike(response.data.isLiked);
-      }
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
+  // useEffect(() => {
+  //   async function getAllPost() {
+  //     const post = state?.multiplePosts?.map((post) => {
+  //       return post?.likes;
+  //     });
+  //     console.log(post);
+  //   }
+  //   getAllPost();
+  // });
 
   return (
     <div>
@@ -47,18 +53,12 @@ const NewsFeed = () => {
         <div>
           {allPost.map((post) => (
             <div key={post._id}>
-              <div>
-                <img src={post.image} alt="" />
+              <div style={{ width: "25%" }}>
+                <img src={post.image} alt="" style={{ width: "100%" }} />
               </div>
               <h2>{post.caption}</h2>
               <span>count :{post?.likes?.length}</span>
-
-              <button
-                style={{ backgroundColor: like ? "blue" : "grey" }}
-                onClick={() => likeSection(post._id)}
-              >
-                Unlike
-              </button>
+              <Like id={post._id} />
             </div>
           ))}
         </div>

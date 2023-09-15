@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../ApiConfig";
-import { toast } from "react-hot-toast";
 
 const YourPost = () => {
   const [myPost, setMyPost] = useState([]);
@@ -30,8 +29,8 @@ const YourPost = () => {
         <div>
           {myPost.map((post) => (
             <div key={post._id}>
-              <div>
-                <img src={post.image} alt="" />
+              <div style={{ width: "25%" }}>
+                <img style={{ width: "100%" }} src={post.image} alt="" />
               </div>
               <h2>{post.caption}</h2>
             </div>

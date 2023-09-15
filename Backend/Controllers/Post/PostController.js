@@ -9,7 +9,7 @@ export const addPost = async (req, res) => {
     const { file } = req.body;
     const { token } = req.body;
 
-    console.log(caption, file, token);
+    // console.log(caption, file, token);
 
     if (caption && file) {
       const decodeToken = jwt.verify(token, process.env.SECRET_KEY);
@@ -152,8 +152,6 @@ export const LikePost = async (req, res) => {
         for (let i = 0; i < post.likes.length; i++) {
           if (post.likes[i].includes(user._id)) {
             flag = true;
-          } else {
-            flag = false;
           }
         }
 
@@ -222,9 +220,7 @@ export const postComments = async (req, res) => {
 
     if (user) {
       const randomId = uuid();
-
       const commentId = randomId.slice(0, 10);
-
       const post = await PostModel.findByIdAndUpdate(
         postId,
         {
@@ -286,7 +282,7 @@ export const deleteComments = async (req, res) => {
 
     const userId = decodeToken?.userId;
 
-    console.log(userId, "userId");
+    // console.log(userId, "userId");
 
     const user = await UserModel.findById(userId);
 

@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useReducer } from "react";
 import api from "./ApiConfig/index";
 
-const initialState = { currentuser: null };
+const initialState = { currentuser: null, multiplePosts: [] };
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -14,6 +14,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         currentuser: null,
+      };
+    case "POSTS":
+      return {
+        ...state,
+        multiplePosts: action.payload,
       };
     default:
       return state;
@@ -42,6 +47,13 @@ const MyContext = ({ children }) => {
     });
   };
 
+  const posts = ({ allPosts }) => {
+    dispatch({
+      type: "POSTS",
+      payload: allPosts,
+    });
+  };
+
   useEffect(() => {
     async function getCurrentUseData() {
       const token = JSON.parse(localStorage.getItem("userToken"));
@@ -56,10 +68,6 @@ const MyContext = ({ children }) => {
             type: "LOGIN",
             payload: response.data.user,
           });
-        } else {
-          dispatch({
-            type: "LOGOUT",
-          });
         }
       }
     }
@@ -67,9 +75,25 @@ const MyContext = ({ children }) => {
     getCurrentUseData();
   }, []);
 
+  useEffect(() => {
+    async function getAllPosts() {
+      const response = await api.get("/allpost");
+
+      if (response.data.success) {
+        console.log(response.data.allposts);
+        dispatch({
+          type: "POSTS",
+          payload: response.data.allposts,
+        });
+      }
+    }
+
+    getAllPosts();
+  }, []);
+
   return (
     <>
-      <MyUserContext.Provider value={{ login, logout, state }}>
+      <MyUserContext.Provider value={{ login, logout, state, posts }}>
         {children}
       </MyUserContext.Provider>
     </>
