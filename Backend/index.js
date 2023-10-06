@@ -48,6 +48,7 @@ import {
   addPost,
   allpost,
   deleteComments,
+  getComments,
   postComments,
 } from "./Controllers/Post/PostController.js";
 import {
@@ -123,6 +124,7 @@ app.get("/allpost", allpost);
 app.post("/likepost", LikePost);
 app.post("/post-comment", isvalidUser, postComments);
 app.post("/delete-comment", isvalidUser, deleteComments);
+app.post("/get-comments", isvalidUser, getComments);
 
 // social users
 

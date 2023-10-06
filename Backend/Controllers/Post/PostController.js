@@ -23,10 +23,14 @@ export const addPost = async (req, res) => {
 
       const userId = decodeToken?.userId;
 
+      const user = await UserModel.findById(userId);
+
       const post = new PostModel({
         image: file,
         caption,
         userId: userId,
+        name: user.name,
+        image: user.profile,
       });
 
       await post.save();
@@ -326,6 +330,37 @@ export const deleteComments = async (req, res) => {
     return res.status(404).json({
       success: false,
       message: "user not found",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error,
+    });
+  }
+};
+
+export const getComments = async (req, res) => {
+  try {
+    const { postId, token } = req.body;
+
+    if (!postId || !token) {
+      return res.status(500).json({
+        success: false,
+        message: "postId and Token is ReQuired",
+      });
+    }
+    const getPost = await PostModel.findById(postId);
+
+    if (getPost) {
+      return res.status(200).json({
+        success: true,
+        commentsData: getPost.comments,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "not a valid post",
     });
   } catch (error) {
     return res.status(500).json({
